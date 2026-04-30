@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Luke — Portfolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow:wght@300;400;600;700&family=Barlow+Condensed:wght@700;900&display=swap" rel="stylesheet"/>
+  <style>
+    /* 
+       CUSTOM PROPERTIES 
+        */
+    :root {
+      --bg:        #0a0c0f;
+      --surface:   #111418;
+      --border:    #1e2530;
+      --accent:    #f0a500;
+      --accent2:   #e05c00;
+      --text:      #d4dae3;
+      --muted:     #5a6578;
+      --mono:      'Share Tech Mono', monospace;
+      --sans:      'Barlow', sans-serif;
+      --display:   'Barlow Condensed', sans-serif;
+    }
+
+    /*
+       RESET & BASE 
+     */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* 
+       UTILITY CLASSES
+       */
+    .mono { font-family: var(--mono); }
+    .accent { color: var(--accent); }
+
+    /* 
+       GRID OVERLAY  */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(240,165,0,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(240,165,0,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none; /* lets clicks pass through */
+      z-index: 0;
+    }
+
+    /* 
+       NAVIGATION BAR
+       Fixed to the top, always visible as you scroll.
+     */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 3rem;
+      background: rgba(10,12,15,0.85);
+      backdrop-filter: blur(10px); /* frosted glass effect */
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: var(--mono);
+      font-size: 1.1rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+    }
+
+    /* nav links sit in a row using flexbox */
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-family: var(--mono);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: color 0.2s; /* smooth hover color change */
+    }
+
+    .nav-links a:hover { color: var(--accent); }
+
+    /* 
+       HERO SECTION
+        */
+    #hero {
+      position: relative;
+      min-height: 100vh;
+      display: grid;
+      place-items: center; /* center both horizontally & vertically */
+      padding: 6rem 3rem 3rem;
+      overflow: hidden;
+    }
+
+    
+    #hero::after {
+      content: 'L';
+      position: absolute;
+      right: -0.1em;
+      top: 50%;
+      transform: translateY(-50%);
+      font-family: var(--display);
+      font-size: clamp(200px, 35vw, 480px); /* scales with viewport */
+      font-weight: 900;
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(240,165,0,0.06);
+      pointer-events: none;
+      line-height: 1;
+      user-select: none;
+    }
+
+    .hero-inner {
+      max-width: 900px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* The small label above the name */
+    .hero-tag {
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      color: var(--accent);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    /* The horizontal line next to the tag */
+    .hero-tag::before {
+      content: '';
+      display: block;
+      width: 40px;
+      height: 1px;
+      background: var(--accent);
+    }
+
+    
+    h1 {
+      font-family: var(--display);
+      font-size: clamp(3rem, 8vw, 7rem);
+      font-weight: 900;
+      line-height: 0.95;
+      letter-spacing: -0.02em;
+      text-transform: uppercase;
+      color: #fff;
+      margin-bottom: 1.5rem;
+    }
+
+    h1 span {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-desc {
+      font-size: 1.1rem;
+      color: var(--muted);
+      max-width: 480px;
+      line-height: 1.7;
+      margin-bottom: 2.5rem;
+    }
+
+    /* The row of CTA buttons */
+    .hero-cta {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    /* Primary button */
+    .btn {
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.85rem 2rem;
+      text-decoration: none;
+      border: 1px solid var(--accent);
+      color: var(--bg);
+      background: var(--accent);
+      transition: all 0.2s;
+      display: inline-block;
+      clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+    }
+
+    .btn:hover {
+      background: var(--accent2);
+      border-color: var(--accent2);
+      transform: translateY(-2px);
+    }
+
+    /* Ghost / outline button */
+    .btn-ghost {
+      background: transparent;
+      color: var(--text);
+      border-color: var(--border);
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: transparent;
+    }
+
+    /* 
+       SCROLL INDICATOR (animated arrow at bottom of hero)
+    */
+    .scroll-hint {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      color: var(--muted);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      z-index: 1;
+    }
+
+    /* The bouncing arrow line */
+    .scroll-hint::after {
+      content: '';
+      display: block;
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(var(--accent), transparent);
+      animation: scrollPulse 1.8s ease-in-out infinite;
+    }
+
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.3; transform: scaleY(0.6); }
+      50%       { opacity: 1;   transform: scaleY(1); }
+    }
+
+    /* 
+       SECTION LAYOUT (shared styles for all sections)
+    */
+    section {
+      position: relative;
+      z-index: 1;
+      padding: 6rem 3rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    /* Section title with a decorative line */
+    .section-label {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--accent);
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+
+    h2 {
+      font-family: var(--display);
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 900;
+      text-transform: uppercase;
+      color: #fff;
+      line-height: 1;
+      margin-bottom: 3rem;
+    }
+
+    /* Horizontal divider line below section heading */
+    h2::after {
+      content: '';
+      display: block;
+      width: 60px;
+      height: 3px;
+      background: var(--accent);
+      margin-top: 0.75rem;
+    }
+
+    /* 
+       ABOUT SECTION
+       Two-column layout: text on left, stats on right.
+     */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr; /* two equal columns */
+      gap: 4rem;
+      align-items: start;
+    }
+
+    .about-text p {
+      color: var(--text);
+      line-height: 1.8;
+      margin-bottom: 1.2rem;
+      font-size: 1.05rem;
+    }
+
+    /* The stat boxes on the right */
+    .about-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px; /* gap between boxes */
+      background: var(--border); /* border colour shows through the gaps */
+    }
+
+    .stat-box {
+      background: var(--surface);
+      padding: 1.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Decorative accent corner on each stat box */
+    .stat-box::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 3px;
+      height: 100%;
+      background: var(--accent);
+      opacity: 0.4;
+    }
+
+    .stat-num {
+      font-family: var(--display);
+      font-size: 2.5rem;
+      font-weight: 900;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 0.25rem;
+    }
+
+    .stat-label {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    /* Interests list */
+    .interests {
+      margin-top: 2rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .tag {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--accent);
+      border: 1px solid rgba(240,165,0,0.3);
+      padding: 0.3rem 0.8rem;
+      letter-spacing: 0.08em;
+      background: rgba(240,165,0,0.05);
+    }
+
+    /* 
+       SKILLS SECTION
+    */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1px;
+      background: var(--border);
+    }
+
+    .skill-card {
+      background: var(--surface);
+      padding: 1.75rem 1.5rem;
+      position: relative;
+      transition: background 0.2s;
+    }
+
+    .skill-card:hover { background: #161b22; }
+
+    .skill-icon {
+      font-size: 1.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .skill-name {
+      font-family: var(--display);
+      font-weight: 700;
+      font-size: 1rem;
+      text-transform: uppercase;
+      color: #fff;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.4rem;
+    }
+
+    .skill-desc {
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* The small glowing dot in the corner */
+    .skill-card::after {
+      content: '';
+      position: absolute;
+      top: 1rem; right: 1rem;
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      opacity: 0.4;
+    }
+
+    /* 
+       PROJECTS SECTION
+     */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 1px;
+      background: var(--border);
+    }
+
+    .project-card {
+      background: var(--surface);
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.25s;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .project-card:hover { background: #141921; }
+
+    /* Glowing top border on hover */
+    .project-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      transform: scaleX(0); /* hidden by default */
+      transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+
+    .project-card:hover::before { transform: scaleX(1); }
+
+    .project-num {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+    }
+
+    .project-title {
+      font-family: var(--display);
+      font-size: 1.6rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      color: #fff;
+      letter-spacing: 0.03em;
+      line-height: 1.1;
+    }
+
+    .project-desc {
+      font-size: 0.92rem;
+      color: var(--muted);
+      line-height: 1.7;
+      flex: 1; /* pushes the tags/links to the bottom */
+    }
+
+    .project-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    /* Photo thumbnail on the project card */
+    .project-thumb {
+      position: relative;
+      overflow: hidden;
+      height: 180px;
+      border: 1px solid var(--border);
+    }
+
+    .project-thumb img {
+      width: 100%;
+      height: 100%;
+      object-position: center;
+      filter: brightness(0.5) saturate(0.7);
+      transition: filter 0.3s ease;
+      display: block;
+    }
+
+    .project-card:hover .project-thumb img {
+      filter: brightness(0.85) saturate(0.9);
+    }
+
+    
+    .conveyor-demo {
+      height: 60px;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      position: relative;
+      overflow: hidden;
+      background: #0d1117;
+      display: flex;
+      align-items: center;
+    }
+
+    /* The moving belt surface */
+    .belt-track {
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 18px,
+        rgba(240,165,0,0.12) 18px,
+        rgba(240,165,0,0.12) 20px
+      );
+      /* Moves the background position to simulate belt motion */
+      animation: beltMove 1.2s linear infinite;
+    }
+
+    @keyframes beltMove {
+      from { background-position: 0 0; }
+      to   { background-position: 40px 0; }
+    }
+
+    /* The box/item riding on the belt */
+    .belt-item {
+      position: absolute;
+      width: 28px;
+      height: 28px;
+      background: var(--accent);
+      top: 50%;
+      transform: translateY(-50%);
+      animation: itemMove 3s linear infinite;
+    }
+
+    @keyframes itemMove {
+      from { left: -30px; }
+      to   { left: calc(100% + 10px); }
+    }
+
+    /* The two rollers at each end of the belt */
+    .belt-roller {
+      position: absolute;
+      width: 14px;
+      height: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      top: 0;
+    }
+    .belt-roller.left  { left: 0; }
+    .belt-roller.right { right: 0; }
+
+    .project-links {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-top: 0.25rem;
+    }
+
+    .project-link {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.06em;
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.2s;
+    }
+
+    .project-link:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .project-link-demo {
+      border-color: rgba(240,165,0,0.3);
+      color: var(--accent);
+    }
+
+    .project-link-demo:hover {
+      background: rgba(240,165,0,0.08);
+    }
+
+    
+    .contact-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: start;
+    }
+
+    .contact-text p {
+      color: var(--muted);
+      line-height: 1.8;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Contact detail rows */
+    .contact-items {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      background: var(--border);
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: var(--surface);
+      padding: 1.2rem 1.5rem;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+
+    .contact-item:hover { background: #161b22; }
+
+    .contact-item-icon {
+      font-size: 1.1rem;
+      width: 2rem;
+      text-align: center;
+    }
+
+    .contact-item-label {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.1rem;
+    }
+
+    .contact-item-value {
+      color: var(--text);
+      font-size: 0.9rem;
+    }
+
+    /* 
+       FOOTER
+    */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    footer p {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+    }
+
+    /* 
+       ENTRANCE ANIMATIONS
+       Elements fade up into view when page loads.
+     */
+    .fade-up {
+      opacity: 0;
+      animation: fadeUp 0.7s ease forwards;
+    }
+
+    .delay-1 { animation-delay: 0.1s; }
+    .delay-2 { animation-delay: 0.25s; }
+    .delay-3 { animation-delay: 0.4s; }
+    .delay-4 { animation-delay: 0.55s; }
+    .delay-5 { animation-delay: 0.7s; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* 
+       RESPONSIVE (mobile-friendly)
+       When the screen is narrower than 700px,
+       switch multi-column layouts to single column.
+     */
+    @media (max-width: 700px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { display: none; }
+      section { padding: 4rem 1.5rem; }
+
+      .about-grid,
+      .contact-inner { grid-template-columns: 1fr; gap: 2rem; }
+
+      .about-stats { grid-template-columns: 1fr 1fr; }
+
+      footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 
+       NAVIGATION
+   -->
+  <nav>
+    <div class="nav-logo">LK://portfolio</div>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- 
+       HERO
+   -->
+  <div id="hero">
+    <div class="hero-inner">
+      <div class="hero-tag fade-up delay-1">CS Student · Systems & Automation</div>
+
+      <!-- The <br> creates a line break inside the heading -->
+      <h1 class="fade-up delay-2">
+        Hi, I'm<br><span>Luke.</span>
+      </h1>
+
+      <p class="hero-desc fade-up delay-3">
+        Computer science student with a passion for industrial systems,
+        controls engineering, and the machines that make the modern world move.
+      </p>
+
+      <div class="hero-cta fade-up delay-4">
+        <a href="#projects" class="btn">View Projects</a>
+        <a href="#contact" class="btn btn-ghost">Get in Touch</a>
+      </div>
+    </div>
+
+    <div class="scroll-hint">Scroll</div>
+  </div>
+
+  <!-- 
+       ABOUT
+   -->
+  <section id="about">
+    <p class="section-label">// 01 — About</p>
+    <h2>Who I Am</h2>
+
+    <div class="about-grid">
+      <div class="about-text">
+        <p>
+          I'm Luke, a Computer Science student driven by curiosity about how
+          software and physical systems interact. My focus sits at the
+          intersection of code and the real world — industrial automation,
+          robotics, and embedded control systems.
+        </p>
+        <p>
+          I'm drawn to problems where software has a direct, tangible impact:
+          machines that move, systems that respond, and processes that run
+          reliably at scale.
+        </p>
+        <p>
+          Currently building my skills and project portfolio as I work toward
+          a career in industrial software or controls engineering.
+        </p>
+
+        <!-- Interests shown as small pill-shaped tags -->
+        <div class="interests">
+          <span class="tag">Industrial Systems</span>
+          <span class="tag">Robotics</span>
+          <span class="tag">Automation</span>
+          <span class="tag">Control Theory</span>
+          <span class="tag">Embedded Systems</span>
+          <span class="tag">PLC Programming</span>
+        </div>
+      </div>
+
+      <!-- Stats panel on the right -->
+      <div class="about-stats">
+        <div class="stat-box">
+          <div class="stat-num">CS</div>
+          <div class="stat-label">Degree Field</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num">1</div>
+          <div class="stat-label">Live Project</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num">∞</div>
+          <div class="stat-label">Curiosity</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num">IRL</div>
+          <div class="stat-label">Focus Area</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 
+       SKILLS
+   -->
+  <section id="skills">
+    <p class="section-label">// 02 — Interests</p>
+    <h2>What I'm Into</h2>
+
+    <!--
+      Each card is a div. The grid defined in CSS
+      automatically wraps them into rows.
+    -->
+    <div class="skills-grid">
+      <div class="skill-card">
+        <div class="skill-icon">⚙️</div>
+        <div class="skill-name">Industrial Systems</div>
+        <div class="skill-desc">Fascinated by how large-scale industrial processes are designed, monitored, and controlled.</div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-icon">🤖</div>
+        <div class="skill-name">Robotics</div>
+        <div class="skill-desc">Interested in how robots sense, decide, and act — from simple arms to autonomous systems.</div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-icon">🔁</div>
+        <div class="skill-name">Automation</div>
+        <div class="skill-desc">Exploring how repetitive physical tasks can be reliably automated through software and hardware.</div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-icon">🔌</div>
+        <div class="skill-name">Embedded Systems</div>
+        <div class="skill-desc">Curious about programming microcontrollers and the software that lives close to the hardware.</div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-icon">📡</div>
+        <div class="skill-name">Control Theory</div>
+        <div class="skill-desc">Learning about feedback loops, sensors, and how systems are kept stable and on target.</div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-icon">💻</div>
+        <div class="skill-name">Systems Programming</div>
+        <div class="skill-desc">Building an understanding of C/C++ and Python for low-level and systems-oriented work.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 
+       PROJECTS
+   -->
+  <section id="projects">
+    <p class="section-label">// 03 — Projects</p>
+    <h2>My Work</h2>
+
+    <div class="projects-grid">
+      <div class="project-card">
+        <div class="project-num">PROJECT_001</div>
+        <div class="project-title">Colour Sorting Conveyor Belt</div>
+
+        <!-- photo thumbnail -->
+        <div class="project-thumb">
+          <img src="project-photo.jpg" alt="Colour sorting conveyor belt — Arduino project"/>
+        </div>
+
+        <!-- Animated conveyor belt sits cleanly below the photo -->
+        <div class="conveyor-demo" aria-hidden="true">
+          <div class="belt-track"></div>
+          <div class="belt-roller left"></div>
+          <div class="belt-roller right"></div>
+          <div class="belt-item"></div>
+        </div>
+
+        <p class="project-desc">
+          An Arduino-powered conveyor belt that automatically sorts objects by colour using
+          a TCS230 sensor and a servo arm. Built from scratch — including the physical frame —
+          to explore embedded systems and real-world automation.
+        </p>
+
+        <div class="project-tags">
+          <span class="tag">Arduino</span>
+          <span class="tag">Electronics</span>
+          <span class="tag">Automation</span>
+          <span class="tag">C++</span>
+        </div>
+
+        <div class="project-links">
+          <a href="conveyor-project.html" class="project-link project-link-demo">
+            <span>▶</span> View Project
+          </a>
+          <a href="https://github.com/Loyleduke" class="project-link" target="_blank" rel="noopener">
+            <span>🐙</span> GitHub
+          </a>
+        </div>
+      </div>
+
+      
+      <div class="project-card" style="opacity:0.35; pointer-events:none;">
+        <div class="project-num">PROJECT_002</div>
+        <div class="project-title">Coming Soon</div>
+        
+      </div>
+    </div>
+  </section>
+
+  <!-- 
+       CONTACT
+   -->
+  <section id="contact">
+    <p class="section-label">// 04 — Contact</p>
+    <h2>Get in Touch</h2>
+
+    <div class="contact-inner">
+      <div class="contact-text">
+        <p>
+          I'm always open to conversations about industrial systems,
+          automation projects, internship opportunities, or just
+          connecting with people in the field.
+        </p>
+       
+      </div>
+
+      <div class="contact-items">
+        
+        <a href="mailto:lukedoyle444@gmail.com" class="contact-item">
+          <div class="contact-item-icon">✉️</div>
+          <div>
+            <div class="contact-item-label">Email</div>
+            <div class="contact-item-value"><span class="__cf_email__" data-cfemail="4b32243e390b2e262a222765282426">lukedoyle444@gmail.com</span></div>
+          </div>
+        </a>
+        <a href="https://github.com/Loyleduke" class="contact-item" target="_blank" rel="noopener">
+          <div class="contact-item-icon">🐙</div>
+          <div>
+            <div class="contact-item-label">GitHub</div>
+            <div class="contact-item-value">github.com/Loyleduke</div>
+          </div>
+        </a>
+        <a href="https://linkedin.com/in/" class="contact-item" target="_blank" rel="noopener">
+          <div class="contact-item-icon">💼</div>
+          <div>
+            <div class="contact-item-label">LinkedIn</div>
+            <div class="contact-item-value">linkedin.com/in/luke-doyle-a10003214/</div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 
+       FOOTER
+   -->
+  <footer>
+    <p>Luke Doyle
